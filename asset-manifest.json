@@ -1,0 +1,12 @@
+{
+  "files": {
+    "main.css": "/workout-tracker-web-version/static/css/main.126b6524.css",
+    "main.js": "/workout-tracker-web-version/static/js/main.cf892fbb.js",
+    "static/js/206.ff21632a.chunk.js": "/workout-tracker-web-version/static/js/206.ff21632a.chunk.js",
+    "index.html": "/workout-tracker-web-version/index.html"
+  },
+  "entrypoints": [
+    "static/css/main.126b6524.css",
+    "static/js/main.cf892fbb.js"
+  ]
+}
