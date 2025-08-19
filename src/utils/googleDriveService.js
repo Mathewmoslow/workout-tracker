@@ -1,7 +1,7 @@
 // Google Drive API Integration for Workout Tracker Data Backup
 // Cross-platform compatible with iOS WorkoutTrackerPro app
 const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest';
-const SCOPES = 'https://www.googleapis.com/auth/drive.file';
+const SCOPES = 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.appdata';
 
 // iOS app compatibility constants
 const APP_DATA_FOLDER = 'appDataFolder';
@@ -190,6 +190,10 @@ class GoogleDriveService {
       // Clear the token from the API client
       if (window.gapi?.client) {
         window.gapi.client.setToken(null);
+      }
+      // Clear any cached auth
+      if (window.google?.accounts?.id) {
+        window.google.accounts.id.disableAutoSelect();
       }
     } catch (error) {
       console.error('Failed to sign out:', error);
