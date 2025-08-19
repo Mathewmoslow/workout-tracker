@@ -104,7 +104,7 @@ class GoogleDriveService {
               this.accessToken = response.access_token;
               this.isSignedIn = true;
               // Set the access token for API calls
-              this.gapi.client.setToken({
+              window.gapi.client.setToken({
                 access_token: response.access_token
               });
             }
@@ -115,7 +115,6 @@ class GoogleDriveService {
         throw error;
       }
 
-      this.gapi = window.gapi;
       this.isInitialized = true;
 
       return true;
@@ -149,7 +148,7 @@ class GoogleDriveService {
             this.accessToken = response.access_token;
             this.isSignedIn = true;
             // Set the access token for API calls
-            this.gapi.client.setToken({
+            window.gapi.client.setToken({
               access_token: response.access_token
             });
             console.log('Successfully signed in to Google Drive');
@@ -189,7 +188,9 @@ class GoogleDriveService {
       this.accessToken = null;
       this.isSignedIn = false;
       // Clear the token from the API client
-      this.gapi.client.setToken(null);
+      if (window.gapi?.client) {
+        window.gapi.client.setToken(null);
+      }
     } catch (error) {
       console.error('Failed to sign out:', error);
     }
@@ -266,7 +267,7 @@ class GoogleDriveService {
       };
 
       // Upload file to appDataFolder
-      const response = await this.gapi.client.request({
+      const response = await window.gapi.client.request({
         path: 'https://www.googleapis.com/upload/drive/v3/files',
         method: 'POST',
         params: {
@@ -305,7 +306,7 @@ class GoogleDriveService {
 
     try {
       // Search in appDataFolder for cross-platform compatibility
-      const files = await this.gapi.client.drive.files.list({
+      const files = await window.gapi.client.drive.files.list({
         q: `parents in 'appDataFolder' and (name contains '${BACKUP_PREFIX}' or name contains 'workout-tracker-backup')`,
         spaces: 'appDataFolder',
         orderBy: 'createdTime desc',
@@ -340,7 +341,7 @@ class GoogleDriveService {
     }
 
     try {
-      const response = await this.gapi.client.drive.files.get({
+      const response = await window.gapi.client.drive.files.get({
         fileId: fileId,
         alt: 'media'
       });
@@ -402,7 +403,7 @@ class GoogleDriveService {
     }
 
     try {
-      await this.gapi.client.drive.files.delete({
+      await window.gapi.client.drive.files.delete({
         fileId: fileId
       });
       return true;
