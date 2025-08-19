@@ -12,14 +12,14 @@
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     
-    <!-- Google Identity Services removed - using OAuth2 flow directly -->
-    
-    <!-- Override COOP policy for Google OAuth -->
+    <!-- Prevent Google One Tap from auto-loading -->
     <script>
-      // This helps with OAuth popup issues
-      if (window.opener) {
-        window.opener = null;
-      }
+      // Disable automatic Google One Tap prompts
+      window.onGoogleLibraryLoad = function() {
+        if (window.google?.accounts?.id) {
+          window.google.accounts.id.disableAutoSelect();
+        }
+      };
     </script>
     
     <title>Workout Tracker Pro</title>

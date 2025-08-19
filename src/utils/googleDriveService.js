@@ -42,18 +42,28 @@ class GoogleDriveService {
         });
       }
 
-      // Load the Google Identity Services library
-      if (!window.google?.accounts) {
+      // Load the Google Identity Services library for OAuth2
+      if (!window.google?.accounts?.oauth2) {
         await new Promise((resolve, reject) => {
           const script = document.createElement('script');
           script.src = 'https://accounts.google.com/gsi/client';
-          script.onload = resolve;
+          script.onload = () => {
+            // Disable One Tap to prevent automatic prompts
+            if (window.google?.accounts?.id) {
+              window.google.accounts.id.disableAutoSelect();
+            }
+            resolve();
+          };
           script.onerror = reject;
           
           const existingScript = document.querySelector('script[src="https://accounts.google.com/gsi/client"]');
           if (!existingScript) {
             document.head.appendChild(script);
           } else {
+            // Still disable One Tap if script already loaded
+            if (window.google?.accounts?.id) {
+              window.google.accounts.id.disableAutoSelect();
+            }
             resolve();
           }
         });
@@ -63,13 +73,20 @@ class GoogleDriveService {
       await new Promise((resolve, reject) => {
         window.gapi.load('client', async () => {
           try {
+            // Initialize without API key first, we'll use OAuth token
             await window.gapi.client.init({
-              apiKey: apiKey,
               discoveryDocs: [DISCOVERY_DOC]
             });
             resolve();
           } catch (error) {
-            reject(error);
+            console.warn('Failed to init with discovery doc, trying without:', error);
+            // Try without discovery docs as fallback
+            try {
+              await window.gapi.client.load('drive', 'v3');
+              resolve();
+            } catch (fallbackError) {
+              reject(fallbackError);
+            }
           }
         });
       });
