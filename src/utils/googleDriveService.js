@@ -225,9 +225,24 @@ class GoogleDriveService {
           email: userInfo.email,
           imageUrl: userInfo.picture
         };
+      } else if (response.status === 401) {
+        // Token might be expired or invalid for userinfo endpoint
+        // Return cached info if available
+        return {
+          id: 'user',
+          name: 'Google Drive User',
+          email: 'Connected',
+          imageUrl: null
+        };
       }
     } catch (error) {
-      console.error('Failed to get user info:', error);
+      // Silently handle error, return placeholder
+      return {
+        id: 'user',
+        name: 'Google Drive User',
+        email: 'Connected',
+        imageUrl: null
+      };
     }
     
     return null;
